@@ -27,9 +27,9 @@ public class Player {
                         (player1.choice == VARIANTS.SCISSORS && player2.choice == VARIANTS.PAPER) ||
                         (player1.choice == VARIANTS.PAPER && player2.choice == VARIANTS.ROCK)
         ) {
-            return player1.name + " победил!";
+            return "Победил игрок с именем: " + player1.name;
         } else {
-            return player2.name + " победил!";
+            return "Победил игрок с именем: " + player2.name;
         }
     }
 }
