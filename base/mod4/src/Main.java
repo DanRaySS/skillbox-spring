@@ -1,5 +1,13 @@
+import java.sql.SQLException;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+
+        DB db = new DB();
+        try {
+            db.insertArticle("Новая статья", "Текст статьи", "2050-12-12", "Admin");
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
