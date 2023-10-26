@@ -1,5 +1,6 @@
 import javax.swing.plaf.nimbus.State;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class DB {
 
@@ -11,6 +12,15 @@ public class DB {
 
     private Connection dbConn = null;
 
+    public ArrayList<Integer> usersIDs = new ArrayList<>();
+
+    public ArrayList<Integer> itemsIDs = new ArrayList<>();
+
+    public ArrayList<String> itemsCategories = new ArrayList<>();
+
+    public ArrayList<String> usersLogins = new ArrayList<>();
+
+
     private Connection getDbConnection() throws ClassNotFoundException, SQLException {
         String connStr = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DB_NAME;
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -19,32 +29,39 @@ public class DB {
         return dbConn;
     }
 
-    public void isConnected() throws SQLException, ClassNotFoundException {
-        dbConn = getDbConnection();
-        System.out.println(dbConn.isValid(1000));
-    }
-
-    public void createTable(String tableName) throws SQLException, ClassNotFoundException {
-        String sql = "CREATE TABLE IF NOT EXISTS " + tableName
-                + " (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(50), password VARCHAR(100))"
-                + " ENGINE=MYISAM;";
-
-        Statement statement = getDbConnection().createStatement();
-        statement.executeUpdate(sql);
-
-    }
-
-    public void insertArticle(String title, String text, String date, String author) throws SQLException, ClassNotFoundException {
-        String sql = "INSERT INTO `articles` (title, text, date, author) VALUES (?, ?, ?, ?)";
+    public void insertArticle(int user_id, int items_id) throws SQLException, ClassNotFoundException {
+        String sql = "INSERT INTO `orders` (user_id, item_id) VALUES (?, ?)";
 
         PreparedStatement prSt = getDbConnection().prepareStatement(sql);
-        prSt.setString(1, title);
-        prSt.setString(2, text);
-        prSt.setString(3, date);
-        prSt.setString(4, author);
+        prSt.setInt(1, user_id);
+        prSt.setInt(2, items_id);
 
         prSt.executeUpdate();
-
     }
 
+    public void getArticles(String table) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT * FROM " + table + " WHERE `login` = 'john'";
+
+        Statement statement = getDbConnection().createStatement();
+        ResultSet res = statement.executeQuery(sql);
+        while (res.next()) {
+            int userId = res.getInt("id");
+            String usersLogin = res.getString("login");
+            usersIDs.add(userId);
+            usersLogins.add(usersLogin);
+        }
+    }
+
+    public void getArticles2 (String table) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT * FROM " + table + " WHERE `category` = 'hats'";
+
+        Statement statement = getDbConnection().createStatement();
+        ResultSet res = statement.executeQuery(sql);
+        while (res.next()) {
+            int itemsId = res.getInt("id");
+            String usersCategorie = res.getString("title");
+            itemsCategories.add(usersCategorie);
+            itemsIDs.add(itemsId);
+        }
+    }
 }
